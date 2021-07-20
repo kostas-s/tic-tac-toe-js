@@ -1,5 +1,40 @@
+body {
+    font-family: 'Fredoka One', cursive;
+}
+
 .gameboard {
     display: flex;
+    box-sizing: border-box;
     border: 1px solid black;
-    border-radius: 10px;
+    width: 450px;
+    height: 450px;
+    flex-wrap: wrap;
+    margin:auto;
+    background-color:rgb(196, 215, 230);
+    padding:0;
 }
+
+.block {
+    transition-duration: 0.05s;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    flex-basis: 33.333333%;
+    height: 150px;
+    border: 1px solid black;
+    font-size: 7em;
+    padding:0;
+    margin:0;
+    user-select: none;
+}
+
+.block:hover {
+    background-color:rgba(0,0,0,0.06);
+}
+
+.block:active {
+    background-color: rgba(0,0,0,0.15);
+    box-shadow: 0 0 10px 4px rgba(0, 0, 0, 0.1);
+}
+
