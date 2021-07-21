@@ -2,10 +2,24 @@ body {
     font-family: 'Fredoka One', cursive;
 }
 
+/* Spacing out the header from the gameboard */
 .player2-display {
     margin-bottom: 2em;
 }
 
+/* Fix for small mobile screens */
+@media only screen and (max-width: 400px) {
+    .block {
+        font-size:2em !important;
+    }
+    .game-over-window.activated, .player-select-window.activated {
+        font-size: 3em !important;
+        height: 250px !important;
+        width: 280px !important;
+    }
+}
+
+/* Gameboard & Block Elements */
 .gameboard {
     display: flex;
     box-sizing: border-box;
@@ -13,6 +27,10 @@ body {
     border-radius: 5px;
     width: 75vmin;
     height: 75vmin;
+    min-width: 180px;
+    max-width: 600px;
+    min-height: 180px;
+    max-height: 600px;
     flex-wrap: wrap;
     margin:auto;
     background-color:rgb(196, 215, 230);
@@ -32,7 +50,7 @@ body {
     flex-basis: 33.333333%;
     height: 33.33333%;
     border: 1px solid black;
-    font-size: 7em;
+    font-size: 6em;
     padding:0;
     margin:0;
     user-select: none;
@@ -52,25 +70,8 @@ body {
     box-shadow: 0 0 10px 4px rgba(0, 0, 0, 0.1);
 }
 
-.game-over-window, .player-select-window {
-    border: 5px solid black;
-    border-radius: 10px;
-    transition-duration: 0.2s;
-    opacity: 0;
-    height: 0px;
-    width: 0px;    
-    background-color: cornflowerblue;
-    font-size: 0px;
-    text-align: center;
-}
 
-.game-over-window.activated, .player-select-window.activated {
-    font-size: 3.8em;
-    opacity: 1;
-    height: 300px;
-    width: 340px;
-}
-
+/* Overlay and form popup elements */
 .overlay {
     position: absolute;
     top:0;
@@ -92,11 +93,42 @@ body {
     visibility: visible;
 }
 
+.game-over-window, .player-select-window {
+    border: 5px solid black;
+    border-radius: 10px;
+    transition-duration: 0.2s;
+    opacity: 0;
+    height: 0px;
+    width: 0px;    
+    background-color: cornflowerblue;
+    font-size: 0px;
+    text-align: center;
+}
+
+.game-over-window.activated, .player-select-window.activated {
+    font-size: 3.8em;
+    opacity: 1;
+    height: 300px;
+    width: 340px;
+}
+
 .game-over-text {
     font-size: 0.6em;
     margin: 1em 0;
 }
 
+/* Player name inputs */
+.player-name {
+    font-size: 0.5em;
+    width: 7em;
+    padding: 5px;
+    margin-bottom: 0.4em;
+    border: 2px solid black;
+    border-radius: 10px;
+}
+
+
+/* Buttons */
 .btn-new-game, .btn-start-game {
     font-size: 0.7em;
     border: 3px solid black;
@@ -127,11 +159,3 @@ body {
     background-color: rgb(156, 218, 137);
 }
 
-.player-name {
-    font-size: 0.5em;
-    width: 7em;
-    padding: 5px;
-    margin-bottom: 0.4em;
-    border: 2px solid black;
-    border-radius: 10px;
-}
