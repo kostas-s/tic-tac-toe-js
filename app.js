@@ -225,21 +225,26 @@ const GameController = (() => {
             for (let block of freeBlocks) {
                 if (_evaluateMoveWins(block.dataset.value, currentTurn)) {
                     pickedBlock = block;
+                    console.log(currentTurn + " found winning move!!");
                     break;
                 }
             }
 
             // If no winning move is found, check if other player is about to win and block him
-            for (let block of freeBlocks) {
-                if (_evaluateMoveWins(block.dataset.value, otherTurn)) {
-                    pickedBlock = block;
-                    break;
+            if (pickedBlock === null) {
+                for (let block of freeBlocks) {
+                    if (_evaluateMoveWins(block.dataset.value, otherTurn)) {
+                        pickedBlock = block;
+                        console.log(currentTurn + " found blocking move!!");
+                        break;
+                    }
                 }
             }
 
-            // As a last option, pick a random block
+            // As a last resort, pick a random block
             if (pickedBlock === null) {
                 pickedBlock = freeBlocks[Math.floor(Math.random() * freeBlocks.length)];
+                console.log(currentTurn + " making random move...");
             }
 
             GameBoard.setValueAt(pickedBlock.dataset.value, currentTurnSymbol());
