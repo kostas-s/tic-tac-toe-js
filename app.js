@@ -79,6 +79,21 @@ const GameBoard = (() => {
         }
     }
 
+    const flashBlocks = (block1, block2, block3) => {
+        // Fires block flashing effect to make winner happier
+
+        const winningBlocks = Array.from(document.querySelectorAll(".block")).filter(block => block.dataset.value === block1.toString() ||
+            block.dataset.value === block2.toString() ||
+            block.dataset.value === block3.toString());
+        winningBlocks[0].classList.add("flash")
+        setTimeout(() => {
+            winningBlocks[1].classList.add("flash")
+        }, 200);
+        setTimeout(() => {
+            winningBlocks[2].classList.add("flash")
+        }, 400);
+
+    }
 
     const clickedBlock = (target) => {
         // Check if block occupied call to advance turn accordingly
@@ -124,7 +139,7 @@ const GameBoard = (() => {
         return gameboardArray
     }
 
-    return { render, clearArray, setValueAt, getValueAt, isFull, getGameboardArray };
+    return { render, clearArray, setValueAt, getValueAt, isFull, getGameboardArray, flashBlocks };
 })();
 
 
@@ -180,6 +195,7 @@ const GameController = (() => {
 
     const newTurn = () => {
         // Advances turn and calls to evaluate game
+
         _evaluateGame();
         if (!gameOver) {
             (nextTurnSymbol === "X") ? nextTurnSymbol = "O" : nextTurnSymbol = "X"
@@ -191,6 +207,8 @@ const GameController = (() => {
     };
 
     const _evaluateMoveWins = (index, move) => {
+        // Evaluates if a placement of "move" in "index" will win the game
+
         const testingGameBoard = [...GameBoard.getGameboardArray()];
         testingGameBoard[index] = move;
         const winConditions = [[0, 1, 2], [3, 4, 5], [6, 7, 8],
@@ -263,6 +281,7 @@ const GameController = (() => {
 
     const _evaluateGame = () => {
         // Checks for win / draw conditions 
+
         const winConditions = [[0, 1, 2], [3, 4, 5], [6, 7, 8],
         [0, 3, 6], [1, 4, 7], [2, 5, 8],
         [0, 4, 8], [2, 4, 6]]
@@ -272,6 +291,7 @@ const GameController = (() => {
                 GameBoard.getValueAt(condition[1])
                 && GameBoard.getValueAt(condition[1]) ===
                 GameBoard.getValueAt(condition[2])) {
+                GameBoard.flashBlocks(condition[0], condition[1], condition[2]);
                 (GameBoard.getValueAt(condition[0]) === "X") ?
                     _playerWon(player1) : _playerWon(player2);
                 return;
@@ -286,12 +306,16 @@ const GameController = (() => {
 
     const _playerWon = (player) => {
         gameOver = true;
-        DisplayController.displayGameOver(player.name + " WINS!");
+        setTimeout(() => {
+            DisplayController.displayGameOver(player.name + " WINS!");
+        }, 1800);
     }
 
     const _draw = () => {
         gameOver = true;
-        DisplayController.displayGameOver("DRAW!");
+        setTimeout(() => {
+            DisplayController.displayGameOver("DRAW!");
+        }, 1800);
     }
 
 
