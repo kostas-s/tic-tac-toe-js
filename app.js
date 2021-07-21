@@ -4,9 +4,11 @@ const DisplayController = (() => {
     const gameboardSection = document.querySelector(".gameboard")
     const overlayPanel = document.querySelector(".overlay");
     const gameOverWindow = document.querySelector(".game-over-window");
+    const playerSelectWindow = document.querySelector(".player-select-window");
 
     const displayGameOver = (text) => {
         // Displays text in game over window, blurs background and awaits new game click
+
         const gameOverText = document.querySelector(".game-over-text");
         gameboardSection.classList.add("blurred");
         overlayPanel.classList.add("activated");
@@ -15,12 +17,44 @@ const DisplayController = (() => {
     }
 
     const hideGameOver = () => {
+        // Hides game over window and un-blurs gameboard
+
         gameboardSection.classList.remove("blurred");
         overlayPanel.classList.remove("activated");
         gameOverWindow.classList.remove("activated");
     }
 
-    return { displayGameOver, hideGameOver };
+    const displayPlayerSelect = () => {
+        // Displays player select window, blurs gameboard and awaits player to select
+        // names and AI option.
+
+        gameboardSection.classList.add("blurred");
+        overlayPanel.classList.add("activated");
+        playerSelectWindow.classList.add("activated");
+    }
+
+    const hidePlayerSelect = () => {
+        // Hides player select window and un-blurs gameboard
+
+        gameboardSection.classList.remove("blurred");
+        overlayPanel.classList.remove("activated");
+        playerSelectWindow.classList.remove("activated");
+    }
+
+    const setPlayer1Name = (name) => {
+        const player1NameDisplay = document.querySelector(".player1-display");
+        player1NameDisplay.textContent = "Player 1 (X): " + name;
+    }
+
+    const setPlayer2Name = (name) => {
+        const player2NameDisplay = document.querySelector(".player2-display");
+        player2NameDisplay.textContent = "Player 2 (O): " + name;
+    }
+
+    return {
+        displayGameOver, hideGameOver, displayPlayerSelect, hidePlayerSelect,
+        setPlayer1Name, setPlayer2Name
+    };
 })();
 
 const GameBoard = (() => {
@@ -69,25 +103,47 @@ const GameBoard = (() => {
 const GameController = (() => {
     // Contains all game logic, win conditions and turn management
 
-    const btnNewGame = document.querySelector(".btn-new-game");
-    btnNewGame.addEventListener("click", () => _newGame());
+    let player1 = null;
+    let player2 = null;
 
+    const btnNewGame = document.querySelector(".btn-new-game");
+    btnNewGame.addEventListener("click", () => newGame());
+
+    const btnStartGame = document.querySelector(".btn-start-game");
+    btnStartGame.addEventListener("click", () => _startGame());
 
     const nextTurnSymbolDisplay = document.querySelector(".next-turn-symbol");
     let nextTurnSymbol = "X";
 
-    const _newGame = () => {
+    const newGame = () => {
         DisplayController.hideGameOver();
-        startGame;
+        DisplayController.displayPlayerSelect();
     }
 
-    const startGame = () => {
-        // New game, clears board and starts next turn
+    const _getPlayerInfo = () => {
+        let player1Name = document.querySelector("#player1-name").value;
+        let player2Name = document.querySelector("#player2-name").value;
 
+        let player1CPU = document.querySelector("#player1-cpu").dataset.cpu;
+        let player2CPU = document.querySelector("#player2-cpu").dataset.cpu;
+
+        DisplayController.setPlayer1Name(player1Name);
+        DisplayController.setPlayer2Name(player2Name);
+
+        GameController.player1 = PlayerFactory(player1Name, player1CPU);
+        GameController.player2 = PlayerFactory(player2Name, player2CPU);
+    }
+
+    const _startGame = () => {
+        // New game, clears board and starts next turn
+        _getPlayerInfo();
+        DisplayController.hidePlayerSelect();
         GameBoard.clearArray();
         GameBoard.render();
         nextTurnSymbol = "X";
+        nextTurnSymbolDisplay.innerText = nextTurnSymbol;
     };
+
 
     const newTurn = () => {
         // Advances turn and calls to evaluate game
@@ -97,18 +153,40 @@ const GameController = (() => {
         evaluateGame();
     };
 
+
     const evaluateGame = () => {
         // Checks for win / draw conditions 
         DisplayController.displayGameOver("I WON");
-        console.log("Check for game over...");
     };
+
 
     // Just used to communicate current turn to GameBoard
     const currentTurnSymbol = () => {
         return nextTurnSymbol;
     };
 
-    return { startGame, newTurn, currentTurnSymbol };
+    return { newGame, newTurn, currentTurnSymbol, player1, player2 };
 })();
 
-GameController.startGame();
+const PlayerFactory = function (name, cpu) {
+    // Construct players
+
+    return { name, cpu };
+}
+
+const btnPlayerCPU = document.querySelectorAll(".btn-player-cpu");
+// CPU Switches basic functionality
+
+for (let btn of btnPlayerCPU) {
+    btn.addEventListener("click", (evt) => {
+        if (evt.target.dataset.cpu === "true") {
+            evt.target.dataset.cpu = "false";
+            evt.target.classList.remove("activated");
+        } else {
+            evt.target.dataset.cpu = "true";
+            evt.target.classList.add("activated");
+        }
+    })
+}
+
+GameController.newGame();

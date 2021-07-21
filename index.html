@@ -19,6 +19,9 @@
     </header>
     <section>
         <div class="turn-display">Next Turn:<span class="next-turn-symbol">X</span></div>
+        <div class="player1-display"></div>
+        <div class="player2-display"></div>
+
     </section>
     <section>
         <div class="gameboard"></div>
@@ -28,7 +31,15 @@
             <p class="game-over-text"></p>
             <button class="btn-new-game">New Game</button>
         </div>
+        <div class="player-select-window">
+            <input class="player-name" id="player1-name" placeholder="Player 1" maxlength="11"><button
+                class="btn-player-cpu" id="player1-cpu" data-cpu="false">CPU</button>
+            <input class="player-name" id="player2-name" placeholder="Player 2" maxlength="11"><button
+                class="btn-player-cpu" id="player2-cpu" data-cpu="false">CPU</button>
+            <button class="btn-start-game">Start Game</button>
+        </div>
     </div>
+
 </body>
 
 </html>

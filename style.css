@@ -43,7 +43,7 @@ body {
     box-shadow: 0 0 10px 4px rgba(0, 0, 0, 0.1);
 }
 
-.game-over-window {
+.game-over-window, .player-select-window {
     border: 5px solid black;
     border-radius: 10px;
     transition-duration: 0.2s;
@@ -55,7 +55,7 @@ body {
     text-align: center;
 }
 
-.game-over-window.activated {
+.game-over-window.activated, .player-select-window.activated {
     font-size: 4em;
     opacity: 1;
     height: 300px;
@@ -87,15 +87,41 @@ body {
     margin-bottom: 0.5em;
 }
 
-.btn-new-game {
+.btn-new-game, .btn-start-game {
     font-size: 0.7em;
     border: 3px solid black;
     border-radius: 10px;
     background-color: lightsteelblue;
-    padding: 6px;
+    padding: 0.3em;
     margin-top: 0;
 }
 
-.btn-new-game:hover {
+.btn-new-game:hover, .btn-start-game:hover {
     background-color: rgb(137, 153, 173);
+}
+
+.btn-player-cpu {
+    font-size: 0.5em;
+    border: 2px solid black;
+    border-radius: 10px;
+    background-color: lightsteelblue;
+    padding: 5px;
+    margin-top: 0;
+}
+
+.btn-player-cpu:hover {
+    background-color: rgb(137, 153, 173);
+}
+
+.btn-player-cpu.activated {
+    background-color: rgb(156, 218, 137);
+}
+
+.player-name {
+    font-size: 0.5em;
+    width: 7em;
+    padding: 5px;
+    margin-bottom: 0.4em;
+    border: 2px solid black;
+    border-radius: 10px;
 }
