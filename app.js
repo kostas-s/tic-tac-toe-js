@@ -27,6 +27,16 @@ const GameBoard = (() => {
         }
     }
 
+    const displayGameOver = (text) => {
+        const overlayPanel = document.querySelector(".overlay");
+        const gameOverWindow = document.querySelector(".game-over-window");
+        const gameOverText = document.querySelector(".game-over-text");
+        gameboardSection.classList.add("blurred");
+        overlayPanel.classList.add("activated");
+        gameOverWindow.classList.add("activated");
+        gameOverText.innerText = text;
+    }
+
 
     const clearArray = () => {
         // Clears array WITHOUT refreshing. Don't forget to refresh calling render
@@ -36,7 +46,7 @@ const GameBoard = (() => {
         }
     }
 
-    return { render, clearArray };
+    return { render, clearArray, displayGameOver };
 })();
 
 
@@ -63,7 +73,7 @@ const GameController = (() => {
 
     const evaluateGame = () => {
         // Checks for win / draw conditions 
-
+        GameBoard.displayGameOver("I WON");
         console.log("Check for game over...");
     };
 

@@ -5,13 +5,18 @@ body {
 .gameboard {
     display: flex;
     box-sizing: border-box;
-    border: 1px solid black;
+    border: 5px solid black;
+    border-radius: 5px;
     width: 450px;
     height: 450px;
     flex-wrap: wrap;
     margin:auto;
     background-color:rgb(196, 215, 230);
     padding:0;
+}
+
+.blurred {
+    filter:blur(8px)
 }
 
 .block {
@@ -21,7 +26,7 @@ body {
     justify-content: center;
     box-sizing: border-box;
     flex-basis: 33.333333%;
-    height: 150px;
+    height: 148px;
     border: 1px solid black;
     font-size: 7em;
     padding:0;
@@ -38,3 +43,58 @@ body {
     box-shadow: 0 0 10px 4px rgba(0, 0, 0, 0.1);
 }
 
+.game-over-window {
+    border: 5px solid black;
+    border-radius: 10px;
+    transition-duration: 0.2s;
+    opacity: 0;
+    height: 0px;
+    width: 0px;    
+    background-color: cornflowerblue;
+    font-size: 4em;
+    text-align: center;
+}
+
+.game-over-window.activated {
+    opacity: 1;
+    height: 300px;
+    width: 400px;
+}
+
+.overlay {
+    position: absolute;
+    top:0;
+    left:0;
+    margin:0;
+    display:flex;
+    justify-content: center;
+    align-items:center;
+    height: 100%;
+    width: 100%;
+    transition-duration: 0.4s;
+    opacity: 0;
+    visibility: hidden;
+    background-color: rgba(0,0,0,0.7);
+}
+
+.overlay.activated {
+    opacity: 1;
+    visibility: visible;
+}
+
+.game-over-text {
+    margin-bottom: 0.5em;
+}
+
+.btn-new-game {
+    font-size: 3rem;
+    border: 3px solid black;
+    border-radius: 10px;
+    background-color: lightsteelblue;
+    padding: 6px;
+    margin-top: 0;
+}
+
+.btn-new-game:hover {
+    background-color: rgb(137, 153, 173);
+}
