@@ -1,3 +1,5 @@
+"use strict"
+
 const DisplayController = (() => {
     // Controls window hiding and popup
 
@@ -110,7 +112,7 @@ const GameBoard = (() => {
     }
 
     const isFull = () => {
-        for (value of gameboardArray) {
+        for (let value of gameboardArray) {
             if (value === "") {
                 return false;
             }
@@ -118,7 +120,11 @@ const GameBoard = (() => {
         return true;
     }
 
-    return { render, clearArray, setValueAt, getValueAt, isFull };
+    const getGameboardArray = () => {
+        return gameboardArray
+    }
+
+    return { render, clearArray, setValueAt, getValueAt, isFull, getGameboardArray };
 })();
 
 
@@ -184,15 +190,58 @@ const GameController = (() => {
         }
     };
 
+    const _evaluateMoveWins = (index, move) => {
+        const testingGameBoard = [...GameBoard.getGameboardArray()];
+        testingGameBoard[index] = move;
+        const winConditions = [[0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]]
+        for (let condition of winConditions) {
+            if (testingGameBoard[condition[0]] === "") continue;
+            if (testingGameBoard[condition[0]] ===
+                testingGameBoard[condition[1]]
+                && testingGameBoard[condition[1]] ===
+                testingGameBoard[condition[2]]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     const _cpuTurn = () => {
         // Find all empty blocks and store in array
 
         const allBlocks = Array.from(document.querySelectorAll(".block"));
         const freeBlocks = allBlocks.filter(b => b.innerText === "");
 
-        // Pick random block after 1 sec
+        // Pick block after 1 sec
         setTimeout(() => {
-            const pickedBlock = freeBlocks[Math.floor(Math.random() * freeBlocks.length)];
+            let pickedBlock = null;
+            let currentTurn = currentTurnSymbol();
+            let otherTurn;
+            (currentTurn === "X") ? otherTurn = "O" : otherTurn = "X";
+
+            // CPU Picks winning move if there is one
+            for (let block of freeBlocks) {
+                if (_evaluateMoveWins(block.dataset.value, currentTurn)) {
+                    pickedBlock = block;
+                    break;
+                }
+            }
+
+            // If no winning move is found, check if other player is about to win and block him
+            for (let block of freeBlocks) {
+                if (_evaluateMoveWins(block.dataset.value, otherTurn)) {
+                    pickedBlock = block;
+                    break;
+                }
+            }
+
+            // As a last option, pick a random block
+            if (pickedBlock === null) {
+                pickedBlock = freeBlocks[Math.floor(Math.random() * freeBlocks.length)];
+            }
+
             GameBoard.setValueAt(pickedBlock.dataset.value, currentTurnSymbol());
             pickedBlock.innerText = currentTurnSymbol();
             newTurn();
@@ -212,7 +261,7 @@ const GameController = (() => {
         const winConditions = [[0, 1, 2], [3, 4, 5], [6, 7, 8],
         [0, 3, 6], [1, 4, 7], [2, 5, 8],
         [0, 4, 8], [2, 4, 6]]
-        for (condition of winConditions) {
+        for (let condition of winConditions) {
             if (GameBoard.getValueAt(condition[0]) === "") continue;
             if (GameBoard.getValueAt(condition[0]) ===
                 GameBoard.getValueAt(condition[1])
