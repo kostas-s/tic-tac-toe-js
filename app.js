@@ -1,4 +1,30 @@
+const DisplayController = (() => {
+    // Controls window hiding and popup
+
+    const gameboardSection = document.querySelector(".gameboard")
+    const overlayPanel = document.querySelector(".overlay");
+    const gameOverWindow = document.querySelector(".game-over-window");
+
+    const displayGameOver = (text) => {
+        // Displays text in game over window, blurs background and awaits new game click
+        const gameOverText = document.querySelector(".game-over-text");
+        gameboardSection.classList.add("blurred");
+        overlayPanel.classList.add("activated");
+        gameOverWindow.classList.add("activated");
+        gameOverText.innerText = text;
+    }
+
+    const hideGameOver = () => {
+        gameboardSection.classList.remove("blurred");
+        overlayPanel.classList.remove("activated");
+        gameOverWindow.classList.remove("activated");
+    }
+
+    return { displayGameOver, hideGameOver };
+})();
+
 const GameBoard = (() => {
+    // Contains everything related to gameboard display gameboard click handlers
 
     const gameboardArray = ["", "", "", "", "", "", "", "", ""];
     const gameboardSection = document.querySelector(".gameboard")
@@ -27,16 +53,6 @@ const GameBoard = (() => {
         }
     }
 
-    const displayGameOver = (text) => {
-        const overlayPanel = document.querySelector(".overlay");
-        const gameOverWindow = document.querySelector(".game-over-window");
-        const gameOverText = document.querySelector(".game-over-text");
-        gameboardSection.classList.add("blurred");
-        overlayPanel.classList.add("activated");
-        gameOverWindow.classList.add("activated");
-        gameOverText.innerText = text;
-    }
-
 
     const clearArray = () => {
         // Clears array WITHOUT refreshing. Don't forget to refresh calling render
@@ -46,14 +62,24 @@ const GameBoard = (() => {
         }
     }
 
-    return { render, clearArray, displayGameOver };
+    return { render, clearArray };
 })();
 
 
 const GameController = (() => {
+    // Contains all game logic, win conditions and turn management
+
+    const btnNewGame = document.querySelector(".btn-new-game");
+    btnNewGame.addEventListener("click", () => _newGame());
+
 
     const nextTurnSymbolDisplay = document.querySelector(".next-turn-symbol");
     let nextTurnSymbol = "X";
+
+    const _newGame = () => {
+        DisplayController.hideGameOver();
+        startGame;
+    }
 
     const startGame = () => {
         // New game, clears board and starts next turn
@@ -73,7 +99,7 @@ const GameController = (() => {
 
     const evaluateGame = () => {
         // Checks for win / draw conditions 
-        GameBoard.displayGameOver("I WON");
+        DisplayController.displayGameOver("I WON");
         console.log("Check for game over...");
     };
 

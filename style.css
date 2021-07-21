@@ -51,11 +51,12 @@ body {
     height: 0px;
     width: 0px;    
     background-color: cornflowerblue;
-    font-size: 4em;
+    font-size: 0px;
     text-align: center;
 }
 
 .game-over-window.activated {
+    font-size: 4em;
     opacity: 1;
     height: 300px;
     width: 400px;
@@ -74,7 +75,7 @@ body {
     transition-duration: 0.4s;
     opacity: 0;
     visibility: hidden;
-    background-color: rgba(0,0,0,0.7);
+    background-color: rgba(0,0,0,0.78);
 }
 
 .overlay.activated {
@@ -87,7 +88,7 @@ body {
 }
 
 .btn-new-game {
-    font-size: 3rem;
+    font-size: 0.7em;
     border: 3px solid black;
     border-radius: 10px;
     background-color: lightsteelblue;
