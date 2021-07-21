@@ -80,7 +80,11 @@ const GameBoard = (() => {
 
     const clickedBlock = (target) => {
         // Check if block occupied call to advance turn accordingly
+        // Ignore click if CPU's turn
 
+        if (GameController.getPlayerFromSymbol(GameController.currentTurnSymbol()).cpu === "true") {
+            return;
+        }
         if (target.innerText === "") {
             gameboardArray[target.dataset.value] = GameController.currentTurnSymbol();
             target.innerText = GameController.currentTurnSymbol();
@@ -101,6 +105,10 @@ const GameBoard = (() => {
         return gameboardArray[i];
     }
 
+    const setValueAt = (i, value) => {
+        gameboardArray[i] = value;
+    }
+
     const isFull = () => {
         for (value of gameboardArray) {
             if (value === "") {
@@ -110,7 +118,7 @@ const GameBoard = (() => {
         return true;
     }
 
-    return { render, clearArray, getValueAt, isFull };
+    return { render, clearArray, setValueAt, getValueAt, isFull };
 })();
 
 
@@ -119,6 +127,7 @@ const GameController = (() => {
 
     let player1 = null;
     let player2 = null;
+    let gameOver = false;
 
     const btnNewGame = document.querySelector(".btn-new-game");
     btnNewGame.addEventListener("click", () => newGame());
@@ -135,8 +144,11 @@ const GameController = (() => {
     }
 
     const _getPlayerInfo = () => {
-        let player1Name = document.querySelector("#player1-name").value;
-        let player2Name = document.querySelector("#player2-name").value;
+        // Reads player info from form, creates Player objects
+        // and assigns into player1 and player2 variables
+
+        let player1Name = document.querySelector("#player1-name").value || "John Doe";
+        let player2Name = document.querySelector("#player2-name").value || "Jane Doe";
 
         let player1CPU = document.querySelector("#player1-cpu").dataset.cpu;
         let player2CPU = document.querySelector("#player2-cpu").dataset.cpu;
@@ -154,19 +166,46 @@ const GameController = (() => {
         DisplayController.hidePlayerSelect();
         GameBoard.clearArray();
         GameBoard.render();
-        nextTurnSymbol = "X";
-        nextTurnSymbolDisplay.innerText = nextTurnSymbol;
+        gameOver = false;
+        nextTurnSymbol = "O";
+        newTurn();
     };
 
 
     const newTurn = () => {
         // Advances turn and calls to evaluate game
-
-        (nextTurnSymbol === "X") ? nextTurnSymbol = "O" : nextTurnSymbol = "X"
-        nextTurnSymbolDisplay.innerText = nextTurnSymbol;
         _evaluateGame();
+        if (!gameOver) {
+            (nextTurnSymbol === "X") ? nextTurnSymbol = "O" : nextTurnSymbol = "X"
+            nextTurnSymbolDisplay.innerText = nextTurnSymbol;
+            if (getPlayerFromSymbol(nextTurnSymbol).cpu === "true" && !GameBoard.isFull()) {
+                _cpuTurn();
+            }
+        }
     };
 
+    const _cpuTurn = () => {
+        // Find all empty blocks and store in array
+
+        const allBlocks = Array.from(document.querySelectorAll(".block"));
+        const freeBlocks = allBlocks.filter(b => b.innerText === "");
+
+        // Pick random block after 1 sec
+        setTimeout(() => {
+            const pickedBlock = freeBlocks[Math.floor(Math.random() * freeBlocks.length)];
+            GameBoard.setValueAt(pickedBlock.dataset.value, currentTurnSymbol());
+            pickedBlock.innerText = currentTurnSymbol();
+            newTurn();
+        }, 1000);
+
+    }
+
+
+    const getPlayerFromSymbol = (symbol) => {
+        if (symbol === "X") { return player1 };
+        if (symbol === "O") { return player2 };
+        return null;
+    }
 
     const _evaluateGame = () => {
         // Checks for win / draw conditions 
@@ -192,10 +231,12 @@ const GameController = (() => {
     };
 
     const _playerWon = (player) => {
+        gameOver = true;
         DisplayController.displayGameOver(player.name + " WINS!");
     }
 
     const _draw = () => {
+        gameOver = true;
         DisplayController.displayGameOver("DRAW!");
     }
 
@@ -205,7 +246,7 @@ const GameController = (() => {
         return nextTurnSymbol;
     };
 
-    return { newGame, newTurn, currentTurnSymbol, player1, player2 };
+    return { newGame, newTurn, currentTurnSymbol, player1, player2, getPlayerFromSymbol };
 })();
 
 const PlayerFactory = function (name, cpu) {
