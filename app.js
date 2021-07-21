@@ -82,6 +82,7 @@ const GameBoard = (() => {
         // Check if block occupied call to advance turn accordingly
 
         if (target.innerText === "") {
+            gameboardArray[target.dataset.value] = GameController.currentTurnSymbol();
             target.innerText = GameController.currentTurnSymbol();
             GameController.newTurn();
         }
@@ -96,7 +97,20 @@ const GameBoard = (() => {
         }
     }
 
-    return { render, clearArray };
+    const getValueAt = (i) => {
+        return gameboardArray[i];
+    }
+
+    const isFull = () => {
+        for (value of gameboardArray) {
+            if (value === "") {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    return { render, clearArray, getValueAt, isFull };
 })();
 
 
@@ -130,8 +144,8 @@ const GameController = (() => {
         DisplayController.setPlayer1Name(player1Name);
         DisplayController.setPlayer2Name(player2Name);
 
-        GameController.player1 = PlayerFactory(player1Name, player1CPU);
-        GameController.player2 = PlayerFactory(player2Name, player2CPU);
+        player1 = PlayerFactory(player1Name, player1CPU);
+        player2 = PlayerFactory(player2Name, player2CPU);
     }
 
     const _startGame = () => {
@@ -150,14 +164,40 @@ const GameController = (() => {
 
         (nextTurnSymbol === "X") ? nextTurnSymbol = "O" : nextTurnSymbol = "X"
         nextTurnSymbolDisplay.innerText = nextTurnSymbol;
-        evaluateGame();
+        _evaluateGame();
     };
 
 
-    const evaluateGame = () => {
+    const _evaluateGame = () => {
         // Checks for win / draw conditions 
-        DisplayController.displayGameOver("I WON");
+        const winConditions = [[0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]]
+        for (condition of winConditions) {
+            if (GameBoard.getValueAt(condition[0]) === "") continue;
+            if (GameBoard.getValueAt(condition[0]) ===
+                GameBoard.getValueAt(condition[1])
+                && GameBoard.getValueAt(condition[1]) ===
+                GameBoard.getValueAt(condition[2])) {
+                (GameBoard.getValueAt(condition[0]) === "X") ?
+                    _playerWon(player1) : _playerWon(player2);
+                return;
+            }
+        }
+
+        if (GameBoard.isFull()) {
+            _draw();
+            return;
+        }
     };
+
+    const _playerWon = (player) => {
+        DisplayController.displayGameOver(player.name + " WINS!");
+    }
+
+    const _draw = () => {
+        DisplayController.displayGameOver("DRAW!");
+    }
 
 
     // Just used to communicate current turn to GameBoard
